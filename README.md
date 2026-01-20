@@ -3,57 +3,57 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-<!-- PyPI 公開後に有効化
+<!-- Enable after PyPI release
 [![PyPI version](https://badge.fury.io/py/beep-lite.svg)](https://badge.fury.io/py/beep-lite)
 -->
 
-シンプルで使いやすいクロスプラットフォーム通知音再生ライブラリ。
+A simple, cross-platform notification sound library for Python.
 
-Windows / macOS / Linux で同一の WAV 音源を利用し、**軽量・低依存・確実な再生**を実現します。
+Play the same WAV audio files on Windows / macOS / Linux with a **lightweight, low-dependency, and reliable** solution.
 
-**[English](README_EN.md)**
+**[日本語](README_JA.md)**
 
-## ✨ 特徴
+## ✨ Features
 
-- **クロスプラットフォーム**: Windows / macOS / Linux 対応
-- **軽量**: numpy などの重量依存なし（約 30KB）
-- **例外安全**: 再生失敗してもアプリを停止させない
-- **非同期再生**: UI をブロックしない
-- **PyInstaller 対応**: 単体実行ファイルに同梱可能
+- **Cross-platform**: Windows / macOS / Linux support
+- **Lightweight**: No heavy dependencies like numpy (~30KB)
+- **Exception-safe**: Never crashes your app on playback failure
+- **Non-blocking**: Asynchronous playback doesn't freeze your UI
+- **PyInstaller ready**: Bundle into standalone executables
 
-## 📦 インストール
+## 📦 Installation
 
 ```bash
 pip install beep-lite
 ```
 
-### オプション: 高品質オーディオバックエンド
+### Optional: High-quality audio backend
 
 ```bash
 pip install beep-lite[audio]
 ```
 
-## 🚀 使い方
+## 🚀 Usage
 
 ```python
 import beep_lite as beep
 
-# 基本的な通知音
-beep.ok()       # ✅ 正常完了
-beep.ng()       # ❌ 異常・失敗
-beep.warn()     # ⚠️ 注意喚起
-beep.crit()     # 🚨 緊急・要対応
+# Basic notifications
+beep.ok()       # ✅ Success
+beep.ng()       # ❌ Error / Failure
+beep.warn()     # ⚠️ Warning
+beep.crit()     # 🚨 Critical / Urgent
 
-# 遊び心のある通知
-beep.moo()      # 🐄 低音系
-beep.mew()      # 🐱 高音系
+# Fun notifications
+beep.moo()      # 🐄 Low frequency
+beep.mew()      # 🐱 High frequency
 
-# スキャン結果
-beep.scan_ok()  # 📗 スキャン成功
-beep.scan_ng()  # 📕 スキャン失敗
+# Scan results
+beep.scan_ok()  # 📗 Scan success
+beep.scan_ng()  # 📕 Scan failure
 ```
 
-### Sound 列挙型を使う
+### Using Sound enum
 
 ```python
 from beep_lite import play, Sound
@@ -62,59 +62,59 @@ play(Sound.OK)
 play(Sound.SCAN_NG)
 ```
 
-### 起動時にプリロード（オプション）
+### Preload at startup (optional)
 
 ```python
 from beep_lite import preload_all
 
-# アプリ起動時に呼び出すと、初回再生のレイテンシを軽減
+# Call at app startup to reduce latency on first play
 preload_all()
 ```
 
-## 🎵 サウンド一覧
+## 🎵 Sound List
 
-| 関数 | Sound 列挙型 | 用途 | 音の特徴 |
-|------|-------------|------|----------|
-| `ok()` | `Sound.OK` | 正常完了 | 明るい短音・上昇系 |
-| `ng()` | `Sound.NG` | 異常・失敗 | 下降・やや長め |
-| `warn()` | `Sound.WARN` | 注意喚起 | 同音2回 |
-| `crit()` | `Sound.CRIT` | 緊急・要対応 | 低音3連 |
-| `moo()` | `Sound.MOO` | 遊び心（低音） | 低域スイープ |
-| `mew()` | `Sound.MEW` | 遊び心（高音） | 高域スイープ |
-| `scan_ok()` | `Sound.SCAN_OK` | スキャン成功 | 極短で鋭い |
-| `scan_ng()` | `Sound.SCAN_NG` | スキャン失敗 | 低短音 |
+| Function | Sound Enum | Use Case | Characteristics |
+|----------|------------|----------|-----------------|
+| `ok()` | `Sound.OK` | Success | Bright, short, ascending |
+| `ng()` | `Sound.NG` | Error | Descending, slightly longer |
+| `warn()` | `Sound.WARN` | Warning | Two-tone alert |
+| `crit()` | `Sound.CRIT` | Critical | Three low tones |
+| `moo()` | `Sound.MOO` | Fun (low) | Low frequency sweep |
+| `mew()` | `Sound.MEW` | Fun (high) | High frequency sweep |
+| `scan_ok()` | `Sound.SCAN_OK` | Scan success | Very short, sharp |
+| `scan_ng()` | `Sound.SCAN_NG` | Scan failure | Low, short |
 
-## 🔧 バックエンド
+## 🔧 Backends
 
-環境に応じて最適なバックエンドを自動選択します：
+The library automatically selects the best available backend:
 
-| 優先度 | バックエンド | 対応 OS | 依存 |
-|--------|-------------|---------|------|
-| 1 | winsound | Windows | なし（標準ライブラリ） |
-| 2 | simpleaudio | 全 OS | `pip install simpleaudio` |
-| 3 | terminal bell | 全 OS | なし（フォールバック） |
+| Priority | Backend | OS | Dependency |
+|----------|---------|-----|------------|
+| 1 | winsound | Windows | None (stdlib) |
+| 2 | simpleaudio | All | `pip install simpleaudio` |
+| 3 | terminal bell | All | None (fallback) |
 
-## 📋 要件
+## 📋 Requirements
 
 - Python 3.10+
 
-### Linux / Raspberry Pi での追加要件
+### Additional Requirements for Linux / Raspberry Pi
 
-`[audio]` オプションで `simpleaudio` を使う場合、ALSA 開発ライブラリが必要です：
+To use `simpleaudio` with the `[audio]` option, you need the ALSA development library:
 
 ```bash
 # Debian / Ubuntu / Raspberry Pi OS
 sudo apt-get install libasound2-dev
 
-# インストール
+# Then install
 pip install beep-lite[audio]
 ```
 
-> **Note**: `[audio]` なしでインストールした場合は terminal bell（`\a`）にフォールバックするため、追加パッケージは不要です。
+> **Note**: If installed without `[audio]`, the library falls back to terminal bell (`\a`), which requires no additional packages.
 
-## 🎯 ユースケース
+## 🎯 Use Cases
 
-### バーコードスキャナー
+### Barcode Scanner
 
 ```python
 def on_scan(barcode: str) -> None:
@@ -125,12 +125,12 @@ def on_scan(barcode: str) -> None:
         beep.scan_ng()
 ```
 
-### 長時間処理の完了通知
+### Long-running Task Completion
 
 ```python
 def heavy_task() -> None:
     try:
-        # 重い処理...
+        # Heavy processing...
         result = process_data()
         beep.ok()
     except Exception:
@@ -138,36 +138,36 @@ def heavy_task() -> None:
         raise
 ```
 
-### GUI アプリでのバリデーション
+### GUI Form Validation
 
 ```python
 def on_submit() -> None:
     if not validate_form():
         beep.warn()
-        show_error("入力内容を確認してください")
+        show_error("Please check your input")
         return
     save_data()
     beep.ok()
 ```
 
-## 🏭 PyInstaller での利用
+## 🏭 PyInstaller Usage
 
 ```bash
 pyinstaller --collect-data beep_lite your_app.py
 ```
 
-または `.spec` ファイルで:
+Or in your `.spec` file:
 
 ```python
 datas=[('path/to/beep_lite/assets', 'beep_lite/assets')]
 ```
 ```
 
-## 📄 ライセンス
+## 📄 License
 
 MIT License
 
-## 📬 リンク
+## 📬 Links
 
 <!-- - [PyPI](https://pypi.org/project/beep-lite/) -->
 - [GitHub](https://github.com/Moge800/beep-lite)
