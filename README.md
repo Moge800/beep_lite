@@ -2,10 +2,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-<!-- Enable after PyPI release
 [![PyPI version](https://badge.fury.io/py/beep-lite.svg)](https://badge.fury.io/py/beep-lite)
--->
 
 A simple, cross-platform notification sound library for Python.
 
