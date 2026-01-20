@@ -1,6 +1,6 @@
 [project]
 name = "beep-lite"
-version = "0.1.1"
+version = "0.1.2"
 description = "Cross-platform notification sound library - lightweight and easy to use"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -33,9 +33,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Moge800/beep-lite"
-Repository = "https://github.com/Moge800/beep-lite"
-Documentation = "https://github.com/Moge800/beep-lite#readme"
+Homepage = "https://github.com/Moge800/beep_lite"
+Repository = "https://github.com/Moge800/beep_lite"
+Documentation = "https://github.com/Moge800/beep_lite#readme"
 
 [build-system]
 requires = ["hatchling"]

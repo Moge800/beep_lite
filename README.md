@@ -167,4 +167,4 @@ MIT License
 ## 📬 Links
 
 <!-- - [PyPI](https://pypi.org/project/beep-lite/) -->
-- [GitHub](https://github.com/Moge800/beep-lite)
+- [GitHub](https://github.com/Moge800/beep_lite)
