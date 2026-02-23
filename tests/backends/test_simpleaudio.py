@@ -74,7 +74,10 @@ class TestSimpleaudioBackend:
                 + b"data" + (0).to_bytes(4, "little")
             )
 
-            with patch("beep_lite.backends.simpleaudio_backend.threading.Thread", _ImmediateThread):
+            with patch(
+                "beep_lite.backends.simpleaudio_backend.threading.Thread",
+                _ImmediateThread,
+            ):
                 backend.play(Sound.OK, wav_bytes)
 
             backend._simpleaudio.WaveObject.from_wave_read.assert_called_once()
