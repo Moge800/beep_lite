@@ -19,11 +19,17 @@ All functions are exception-safe - they will never crash your application.
 Errors are logged as warnings.
 """
 
+from importlib.metadata import PackageNotFoundError, version
+
 from .api import crit, mew, moo, ng, ok, play, scan_ng, scan_ok, warn
 from .loader import clear_cache, preload_all
 from .types import Sound
 
-__version__ = "0.1.0"
+try:
+    __version__ = version("beep-lite")
+except PackageNotFoundError:
+    __version__ = "0.0.0+local"
+
 __all__ = [
     # Main API functions
     "ok",

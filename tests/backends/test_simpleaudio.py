@@ -5,6 +5,16 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 
+class _ImmediateThread:
+    """Thread stub that executes target immediately (for deterministic tests)."""
+
+    def __init__(self, target, daemon=True):  # noqa: ANN001, FBT002
+        self._target = target
+
+    def start(self) -> None:
+        self._target()
+
+
 class TestSimpleaudioBackend:
     """Test SimpleaudioBackend."""
 
@@ -42,45 +52,30 @@ class TestSimpleaudioBackend:
             backend = SimpleaudioBackend()
             assert backend.is_available() is True
 
+    @patch("beep_lite.backends.simpleaudio_backend.simpleaudio", create=True)
+    def test_simpleaudio_backend_play_uses_wave_read(self, mock_sa: MagicMock) -> None:
+        """play() should decode wav bytes and call from_wave_read."""
+        with patch.dict("sys.modules", {"simpleaudio": mock_sa}):
+            from beep_lite.backends.simpleaudio_backend import SimpleaudioBackend
+            from beep_lite.types import Sound
 
-class TestBytesIOWrapper:
-    """Test _BytesIOWrapper helper class."""
+            backend = SimpleaudioBackend()
 
-    def test_bytes_io_wrapper_read(self) -> None:
-        """_BytesIOWrapper should support read operations."""
-        from beep_lite.backends.simpleaudio_backend import _BytesIOWrapper
+            mock_wave_obj = MagicMock()
+            backend._simpleaudio.WaveObject.from_wave_read.return_value = mock_wave_obj
 
-        wrapper = _BytesIOWrapper(b"hello world")
+            # Minimal valid WAV bytes (RIFF/WAVE header)
+            wav_bytes = (
+                b"RIFF" + (36).to_bytes(4, "little") + b"WAVEfmt "
+                + (16).to_bytes(4, "little")
+                + (1).to_bytes(2, "little") + (1).to_bytes(2, "little")
+                + (8000).to_bytes(4, "little") + (16000).to_bytes(4, "little")
+                + (2).to_bytes(2, "little") + (16).to_bytes(2, "little")
+                + b"data" + (0).to_bytes(4, "little")
+            )
 
-        assert wrapper.read(5) == b"hello"
-        assert wrapper.read(1) == b" "
-        assert wrapper.read() == b"world"
+            with patch("beep_lite.backends.simpleaudio_backend.threading.Thread", _ImmediateThread):
+                backend.play(Sound.OK, wav_bytes)
 
-    def test_bytes_io_wrapper_seek_and_tell(self) -> None:
-        """_BytesIOWrapper should support seek and tell operations."""
-        from beep_lite.backends.simpleaudio_backend import _BytesIOWrapper
-
-        wrapper = _BytesIOWrapper(b"hello world")
-
-        assert wrapper.tell() == 0
-        wrapper.seek(6)
-        assert wrapper.tell() == 6
-        assert wrapper.read(5) == b"world"
-
-    def test_bytes_io_wrapper_seek_whence(self) -> None:
-        """_BytesIOWrapper should support different whence values."""
-        from beep_lite.backends.simpleaudio_backend import _BytesIOWrapper
-
-        wrapper = _BytesIOWrapper(b"hello world")
-
-        # SEEK_SET (0)
-        wrapper.seek(5, 0)
-        assert wrapper.tell() == 5
-
-        # SEEK_CUR (1)
-        wrapper.seek(2, 1)
-        assert wrapper.tell() == 7
-
-        # SEEK_END (2)
-        wrapper.seek(-3, 2)
-        assert wrapper.tell() == 8
+            backend._simpleaudio.WaveObject.from_wave_read.assert_called_once()
+            mock_wave_obj.play.assert_called_once()
