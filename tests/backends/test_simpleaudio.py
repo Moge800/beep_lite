@@ -66,12 +66,18 @@ class TestSimpleaudioBackend:
 
             # Minimal valid WAV bytes (RIFF/WAVE header)
             wav_bytes = (
-                b"RIFF" + (36).to_bytes(4, "little") + b"WAVEfmt "
+                b"RIFF"
+                + (36).to_bytes(4, "little")
+                + b"WAVEfmt "
                 + (16).to_bytes(4, "little")
-                + (1).to_bytes(2, "little") + (1).to_bytes(2, "little")
-                + (8000).to_bytes(4, "little") + (16000).to_bytes(4, "little")
-                + (2).to_bytes(2, "little") + (16).to_bytes(2, "little")
-                + b"data" + (0).to_bytes(4, "little")
+                + (1).to_bytes(2, "little")
+                + (1).to_bytes(2, "little")
+                + (8000).to_bytes(4, "little")
+                + (16000).to_bytes(4, "little")
+                + (2).to_bytes(2, "little")
+                + (16).to_bytes(2, "little")
+                + b"data"
+                + (0).to_bytes(4, "little")
             )
 
             with patch(
