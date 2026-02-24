@@ -53,9 +53,7 @@ class TestSimpleaudioBackend:
             assert backend.is_available() is True
 
     @patch("beep_lite.backends.simpleaudio_backend.simpleaudio", create=True)
-    def test_simpleaudio_backend_play_uses_wave_read(
-        self, mock_sa: MagicMock
-    ) -> None:
+    def test_simpleaudio_backend_play_uses_wave_read(self, mock_sa: MagicMock) -> None:
         """play() should decode wav bytes and call from_wave_read."""
         with patch.dict("sys.modules", {"simpleaudio": mock_sa}):
             from beep_lite.backends.simpleaudio_backend import SimpleaudioBackend
