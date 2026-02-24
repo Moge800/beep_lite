@@ -1,7 +1,9 @@
 """Simpleaudio backend implementation."""
 
+import io
 import logging
 import threading
+import wave
 
 from ..types import Sound
 
@@ -37,10 +39,9 @@ class SimpleaudioBackend:
 
         def _play_thread() -> None:
             try:
-                wave_obj = self._simpleaudio.WaveObject.from_wave_file(
-                    _BytesIOWrapper(data)
-                )
-                wave_obj.play()
+                with wave.open(io.BytesIO(data), "rb") as wav_reader:
+                    wave_obj = self._simpleaudio.WaveObject.from_wave_read(wav_reader)
+                    wave_obj.play()
             except Exception as e:
                 logger.warning(f"simpleaudio playback failed for {sound.value}: {e}")
 
@@ -60,32 +61,3 @@ class SimpleaudioBackend:
             return True
         except ImportError:
             return False
-
-
-class _BytesIOWrapper:
-    """Wrapper to make bytes behave like a file for simpleaudio."""
-
-    def __init__(self, data: bytes) -> None:
-        self._data = data
-        self._pos = 0
-
-    def read(self, size: int = -1) -> bytes:
-        if size == -1:
-            result = self._data[self._pos :]
-            self._pos = len(self._data)
-        else:
-            result = self._data[self._pos : self._pos + size]
-            self._pos += size
-        return result
-
-    def seek(self, pos: int, whence: int = 0) -> int:
-        if whence == 0:
-            self._pos = pos
-        elif whence == 1:
-            self._pos += pos
-        elif whence == 2:
-            self._pos = len(self._data) + pos
-        return self._pos
-
-    def tell(self) -> int:
-        return self._pos
